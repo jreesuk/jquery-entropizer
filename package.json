@@ -1,0 +1,41 @@
+{
+	"name": "jquery-entropizer",
+	"description": "jQuery password meter plugin",
+	"version": "0.0.1",
+	"author": "Jonathan Rees",
+	"homepage": "https://github.com/jreesuk/jquery-entropizer",
+	"repository": {
+	    "type": "git",
+		"url": "git://github.com/jreesuk/jquery-entropizer.git"
+	},
+	"main": "dist/jquery-entropizer.js",
+	"license": "MIT",
+	"private": true,
+	"keywords": [
+		"password",
+		"strength",
+		"meter",
+		"calculator",
+		"entropy",
+		"bits",
+		"jquery"
+	],
+	"dependencies": {},
+	"devDependencies": {
+		"karma-jasmine": "~0.1.5",
+		"karma-requirejs": "~0.2.2",
+		"karma-chrome-launcher": "~0.1.4",
+		"karma-firefox-launcher": "~0.1.3",
+		"karma-ie-launcher": "~0.1.5",
+		"grunt-karma": "~0.8.3",
+		"grunt-template-jasmine-requirejs": "~0.2.0",
+		"grunt-contrib-jshint": "~0.10.0",
+		"grunt-contrib-jasmine": "~0.6.4",
+		"grunt-contrib-clean": "~0.5.0",
+		"grunt-contrib-copy": "~0.5.0",
+		"grunt-banner": "~0.2.2",
+		"grunt-contrib-watch": "~0.6.1",
+		"grunt-contrib-uglify": "0.4.0",
+		"grunt": "~0.4.5"
+	}
+}

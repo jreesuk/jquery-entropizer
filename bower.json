@@ -1,0 +1,38 @@
+{
+	"name": "jquery-entropizer",
+	"version": "0.0.1",
+	"homepage": "https://github.com/jreesuk/jquery-entropizer",
+	"author": "Jonathan Rees",
+	"description": "jQuery password meter plugin",
+	"main": "dist/jquery-entropizer.js",
+	"dependencies": {
+		"jquery": "~1.11.1",
+		"entropizer": "~0.1.1"
+	},
+	"moduleType": [
+		"amd",
+		"globals",
+		"node"
+	],
+	"keywords": [
+		"password",
+		"strength",
+		"meter",
+		"calculator",
+		"entropy",
+		"bits",
+		"jquery",
+		"plugin"
+	],
+	"license": "MIT",
+	"private": true,
+	"ignore": [
+		"**/.*",
+		"node_modules",
+		"bower_components",
+		"test",
+		"src",
+		"package.json",
+		"gruntfile.js"
+	]
+}
