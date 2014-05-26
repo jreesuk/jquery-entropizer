@@ -1,4 +1,4 @@
-﻿/* global describe, it, expect, beforeEach, afterEach */
+﻿/* global jasmine, describe, it, expect, beforeEach, afterEach */
 
 define(['jquery', 'jquery-entropizer'], function($) {
 	'use strict';
@@ -7,12 +7,16 @@ define(['jquery', 'jquery-entropizer'], function($) {
 
 		// Create password input and container for meter
 		beforeEach(function() {
+			$('<input>').attr({ id: 'username', type: 'text' }).appendTo('body');
 			$('<input>').attr({ id: 'pwd', type: 'password' }).appendTo('body');
+			$('<input>').attr({ id: 'confirm', type: 'password' }).appendTo('body');
 			$('<div>').attr({ id: 'meter' }).appendTo('body');
 		});
 
 		afterEach(function() {
+			$('#username').remove();
 			$('#pwd').remove();
+			$('#confirm').remove();
 			$('#meter').remove();
 		});
 
@@ -32,29 +36,120 @@ define(['jquery', 'jquery-entropizer'], function($) {
 			expect($('#meter').entropizer()[0]).toBe($('#meter')[0]);
 		});
 
-		it('displays an initial state for empty input using target selector', function() {
+		it('uses first password field as default target', function() {
+			var render = jasmine.createSpy();
+
 			$('#meter').entropizer({
-				target: '#pwd'
+				render: render
 			});
-			expect($('#meter')[0].innerHTML).toEqual('0');
+
+			expect(render.calls.count()).toEqual(1);
+
+			$('#username').val('zxcv').trigger('keyup');
+			expect(render.calls.count()).toEqual(1);
+
+			$('#pwd').val('abcd').trigger('keyup');
+			expect(render.calls.count()).toEqual(2);
+
+			$('#confirm').val('abcd').trigger('keyup');
+			expect(render.calls.count()).toEqual(2);
 		});
 
-		it('displays an initial state for non-empty input using target selector', function() {
+		it('calculates initial entropy for empty input', function() {
+			var render = jasmine.createSpy(),
+				data;
+
+			$('#meter').entropizer({
+				target: '#pwd',
+				render: render
+			});
+
+			data = render.calls.mostRecent().args[0];
+			expect(data.entropy).toEqual(0);
+		});
+
+		it('calculates initial entropy for non-empty input', function() {
+			var render = jasmine.createSpy(),
+				data;
+			
 			$('#pwd').val('abc');
+			
 			$('#meter').entropizer({
-				target: '#pwd'
+				target: '#pwd',
+				render: render
 			});
-			expect($('#meter')[0].innerHTML).toEqual('14');
+
+			data = render.calls.mostRecent().args[0];
+			expect(data.entropy).toBeCloseTo(14.101, 3);
 		});
 
-		it('watches an input using target selector', function() {
+		it('watches an input on keyup by default', function() {
+			var render = jasmine.createSpy(),
+				data;
+
 			$('#meter').entropizer({
-				target: '#pwd'
+				target: '#pwd',
+				render: render
 			});
 			
-			// Need to give it a nudge
 			$('#pwd').val('asdf').trigger('keyup');
-			expect($('#meter')[0].innerHTML).toEqual('19');
+
+			data = render.calls.mostRecent().args[0];
+			expect(data.entropy).toBeCloseTo(18.802, 3);
+		});
+
+		it('watches an input on keydown by default', function() {
+			var render = jasmine.createSpy(),
+				data;
+
+			$('#meter').entropizer({
+				target: '#pwd',
+				render: render
+			});
+
+			$('#pwd').val('asdf').trigger('keydown');
+
+			data = render.calls.mostRecent().args[0];
+			expect(data.entropy).toBeCloseTo(18.802, 3);
+		});
+
+		it('can configure event to watch', function() {
+			var render = jasmine.createSpy(),
+				calls;
+
+			$('#meter').entropizer({
+				target: '#pwd',
+				render: render,
+				on: 'test'
+			});
+
+			$('#pwd').val('asdf');
+			calls = render.calls.count();
+			$('#pwd').trigger('test');
+
+			expect(render.calls.count()).toEqual(calls + 1);
+		});
+
+		it('can configure custom map', function() {
+			var render = jasmine.createSpy(),
+				data;
+
+			$('#meter').entropizer({
+				target: '#pwd',
+				render: render,
+				map: function(entropy) {
+					return {
+						asdf: entropy.toFixed(0) + ' bits'
+					};
+				}
+			});
+
+			$('#pwd').val('asdf').trigger('keyup');
+
+			data = render.calls.mostRecent().args[0];
+			expect(data).toEqual({
+				asdf: '19 bits'
+			});
 		});
 
 	});

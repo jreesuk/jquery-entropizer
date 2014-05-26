@@ -4,24 +4,44 @@
 	// Actual plugin definition
 	function factory($, Entropizer) {
 
-		function Meter($this, options) {
-			this.options = options;
-			this.$this = $this;
-			$(options.target).on('keydown keyup', this.update.bind(this));
+		var defaults = {
+			target: 'input[type=password]:first',
+			on: 'keydown keyup'
+		};
+
+		function Meter(container, options) {
+			this.options = $.extend({}, defaults, options);
+			this.render = this.options.render || this._render;
+			this.map = this.options.map || this._map;
+			this.container = container;
+			this.entropizer = new Entropizer();
+			this.target = $(this.options.target);
+			this.target.on(this.options.on, this.update.bind(this));
 			this.update();
 		}
 
 		Meter.prototype.update = function() {
-			var password = $(this.options.target).val();
-			var entropy = new Entropizer().evaluate(password);
-			this.$this.html(entropy.toFixed(0));
+			var password, entropy, data;
+			password = this.target.val();
+			entropy = this.entropizer.evaluate(password);
+			data = this.map.call(this, entropy);
+			this.render.call(this, data);
+		};
+
+		// Default map
+		Meter.prototype._map = function(entropy) {
+			return {
+				entropy: entropy
+			};
+		};
+
+		// Default rendering
+		Meter.prototype._render = function(data) {
+			this.container.html(data.entropy.toFixed(0));
 		};
 
 		$.fn.entropizer = function(options) {
-			if (options && options.target) {
-				this.data('entropizer', new Meter(this, options));
-			}
-			return this;
+			return this.data('entropizer', new Meter(this, options));
 		};
 	}
 
