@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>jQuery Entropizer demo</title>
+    <script type="text/javascript" src="lib/jquery.js"></script>
+    <script type="text/javascript" src="lib/entropizer.js"></script>
+    <script type="text/javascript" src="src/jquery-entropizer.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('#meter').entropizer({
+                target: '#pwd'
+            });
+        });
+    </script>
+    <style type="text/css">
+        body {
+            font-family: Arial, Verdana, sans-serif;
+        }
+        .wrapper {
+            width: 600px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            padding: 20px;
+        }
+        label {
+            width: 100px;
+        }
+        #pwd {
+            width: 300px;
+            margin-left: 10px;
+        }
+        #meter {
+            width: 200px;
+            height: 25px;
+            line-height: 25px;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <label>
+            Password
+            <input type="password" id="pwd" />
+        </label>
+        <div id="meter">
+        </div>
+    </div>
+</body>
+</html>

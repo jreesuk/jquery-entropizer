@@ -2,8 +2,25 @@
 	'use strict';
 
 	// Actual plugin definition
-	function factory($) {
-		$.fn.entropizer = function() {
+	function factory($, Entropizer) {
+
+		function Meter($this, options) {
+			this.options = options;
+			this.$this = $this;
+			$(options.target).on('keydown keyup', this.update.bind(this));
+			this.update();
+		}
+
+		Meter.prototype.update = function() {
+			var password = $(this.options.target).val();
+			var entropy = new Entropizer().evaluate(password);
+			this.$this.html(entropy.toFixed(0));
+		};
+
+		$.fn.entropizer = function(options) {
+			if (options && options.target) {
+				this.data('entropizer', new Meter(this, options));
+			}
 			return this;
 		};
 	}
