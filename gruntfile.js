@@ -31,7 +31,7 @@ module.exports = function(grunt) {
 			src: ['src/**/*.js', 'test/**/*.js']
 		},
 		jasmine: {
-			src: ['src/**/*.js', 'test/bind-polyfill.js'],	// Polyfill is for PhantomJS
+			src: ['src/**/*.js'],
 			options: {
 				specs: ['test/jquery-entropizer-tests.js'],
 				template: require('grunt-template-jasmine-requirejs'),

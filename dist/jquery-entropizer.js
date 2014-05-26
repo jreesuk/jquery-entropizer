@@ -1,6 +1,6 @@
 /*!
  * jquery-entropizer - 0.0.1
- * Built: 2014-05-26 18:43
+ * Built: 2014-05-26 18:48
  * https://github.com/jreesuk/jquery-entropizer
  * 
  * Copyright (c) 2014 Jonathan Rees
@@ -24,7 +24,7 @@
 			this.container = container;
 			this.entropizer = new Entropizer();
 			this.target = $(this.options.target);
-			this.target.on(this.options.on, this.update.bind(this));
+			this.target.on(this.options.on, $.proxy(this.update, this));
 			this.update();
 		}
 
@@ -41,7 +41,7 @@
 			var buckets = [
 				{ max: 45, strength: 'poor', color: '#f00' },
 				{ min: 45, max: 60, strength: 'ok', color: '#f90' },
-				{ min: 60, max: 75, strength: 'good', color: '#7c0' },
+				{ min: 60, max: 75, strength: 'good', color: '#8c0' },
 				{ min: 75, strength: 'great', color: '#0c5' }
 			],
 			selectedBucket;
