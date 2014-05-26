@@ -30,14 +30,30 @@
 
 		// Default map
 		Meter.prototype._map = function(entropy) {
+			var buckets = [
+				{ max: 45, strength: 'poor', color: '#f00' },
+				{ min: 45, max: 60, strength: 'ok', color: '#f90' },
+				{ min: 60, max: 75, strength: 'good', color: '#7c0' },
+				{ min: 75, strength: 'great', color: '#0c5' }
+			],
+			selectedBucket;
+			$.each(buckets, function(index, bucket) {
+				if ((!bucket.min || entropy >= bucket.min) && (!bucket.max || entropy < bucket.max)) {
+					selectedBucket = bucket;
+					return false;
+				}
+			});
 			return {
-				entropy: entropy
+				entropy: entropy,
+				strength: selectedBucket.strength,
+				color: selectedBucket.color
 			};
 		};
 
 		// Default rendering
 		Meter.prototype._render = function(data) {
-			this.container.html(data.entropy.toFixed(0));
+			this.container.css('background-color', data.color);
+			this.container.html(data.strength + ' (' + data.entropy.toFixed(0) + ' bits)');
 		};
 
 		$.fn.entropizer = function(options) {

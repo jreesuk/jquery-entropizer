@@ -152,5 +152,38 @@ define(['jquery', 'jquery-entropizer'], function($) {
 			});
 		});
 
+		describe('mapping', function() {
+
+			var testCases = [
+				{ password: 'asdf', expected: { strength: 'poor', color: '#f00' } },			// < 45 bits
+				{ password: 'Asdf123!', expected: { strength: 'ok', color: '#f90' } },			// 45-60 bits
+				{ password: 'Asdf123_~!', expected: { strength: 'good', color: '#7c0' } },		// 60-75 bits
+				{ password: 'Asdf123!"£$%^', expected: { strength: 'great', color: '#0c5' } }	// > 75 bits
+			];
+
+			for (var i = 0; i < testCases.length; i++) {
+				runTest(testCases[i].password, testCases[i].expected);
+			}
+
+			function runTest(password, expected) {
+				it('maps entropy using default buckets (' + expected.strength + ', ' + expected.color + ')', function() {
+					var render = jasmine.createSpy(),
+						data;
+
+					$('#meter').entropizer({
+						target: '#pwd',
+						render: render
+					});
+
+					$('#pwd').val(password).trigger('keyup');
+
+					data = render.calls.mostRecent().args[0];
+					expect(data.strength).toEqual(expected.strength);
+					expect(data.color).toEqual(expected.color);
+				});
+			}
+
+		});
+		
 	});
 });
