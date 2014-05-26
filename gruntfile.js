@@ -37,10 +37,10 @@ module.exports = function(grunt) {
 				template: require('grunt-template-jasmine-requirejs'),
 				templateOptions: {
 					requireConfig: {
-						baseUrl: 'src',
+						baseUrl: 'src/js',
 						paths: {
-							jquery: '../lib/jquery',
-							entropizer: '../lib/entropizer'
+							jquery: '../../lib/jquery',
+							entropizer: '../../lib/entropizer'
 						}
 					}
 				}
@@ -53,8 +53,8 @@ module.exports = function(grunt) {
 		},
 		copy: {
 			main: {
-				src: 'src/jquery-entropizer.js',
-				dest: 'dist/<%= pkg.name %>.js'
+				src: 'src/js/jquery-entropizer.js',
+				dest: 'dist/js/<%= pkg.name %>.js'
 			},
 			lib: {
 				src: ['bower_components/entropizer/dist/entropizer.js', 'bower_components/jquery/dist/jquery.js'],
@@ -72,20 +72,34 @@ module.exports = function(grunt) {
 					linebreak: true
 				},
 				files: {
-					src: ['dist/<%= pkg.name %>.js']
+					src: ['dist/js/<%= pkg.name %>.js', 'dist/css/<%= pkg.name %>.css']
 				}
 			}
 		},
 		uglify: {
 			options: {
 				preserveComments: 'some',
-				sourceMap: 'dist/<%= pkg.name %>.min.map',
-				sourceMapRoot: '..',
+				sourceMap: 'dist/js/<%= pkg.name %>.min.map',
+				sourceMapRoot: '../..',
 				sourceMappingURL: '<%= pkg.name %>.min.map'
 			},
 			dist: {
-				src: ['dist/<%= pkg.name %>.js'],
-				dest: 'dist/<%= pkg.name %>.min.js'
+				src: ['dist/js/<%= pkg.name %>.js'],
+				dest: 'dist/js/<%= pkg.name %>.min.js'
+			}
+		},
+		less: {
+			main: {
+				files: {
+					'dist/css/<%= pkg.name %>.css': 'src/css/jquery-entropizer.less'
+				}
+			}
+		},
+		cssmin: {
+			main: {
+				files: {
+					'dist/css/<%= pkg.name %>.min.css': 'dist/css/<%= pkg.name %>.css'
+				}
 			}
 		}
 	});
@@ -98,6 +112,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-banner');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-cssmin');
+	grunt.loadNpmTasks('grunt-contrib-less');
 
-	grunt.registerTask('default', ['jshint', 'copy:lib', 'jasmine', 'clean', 'copy:main', 'usebanner', 'uglify']);
+	grunt.registerTask('default', ['jshint', 'copy:lib', 'jasmine', 'clean', 'copy:main', 'less', 'usebanner', 'uglify', 'cssmin']);
 }

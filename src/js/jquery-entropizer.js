@@ -31,7 +31,7 @@
 		// Default map
 		Meter.prototype._map = function(entropy) {
 			var buckets = [
-				{ max: 45, strength: 'poor', color: '#f00' },
+				{ max: 45, strength: 'poor', color: '#d00' },
 				{ min: 45, max: 60, strength: 'ok', color: '#f90' },
 				{ min: 60, max: 75, strength: 'good', color: '#8c0' },
 				{ min: 75, strength: 'great', color: '#0c5' }

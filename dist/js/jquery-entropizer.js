@@ -1,6 +1,6 @@
 /*!
  * jquery-entropizer - 0.0.1
- * Built: 2014-05-26 18:48
+ * Built: 2014-05-26 22:03
  * https://github.com/jreesuk/jquery-entropizer
  * 
  * Copyright (c) 2014 Jonathan Rees
@@ -39,7 +39,7 @@
 		// Default map
 		Meter.prototype._map = function(entropy) {
 			var buckets = [
-				{ max: 45, strength: 'poor', color: '#f00' },
+				{ max: 45, strength: 'poor', color: '#d00' },
 				{ min: 45, max: 60, strength: 'ok', color: '#f90' },
 				{ min: 60, max: 75, strength: 'good', color: '#8c0' },
 				{ min: 75, strength: 'great', color: '#0c5' }

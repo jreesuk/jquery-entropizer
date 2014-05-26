@@ -155,7 +155,7 @@ define(['jquery', 'jquery-entropizer'], function($) {
 		describe('mapping', function() {
 
 			var testCases = [
-				{ password: 'asdf', expected: { strength: 'poor', color: '#f00' } },			// < 45 bits
+				{ password: 'asdf', expected: { strength: 'poor', color: '#d00' } },			// < 45 bits
 				{ password: 'Asdf123!', expected: { strength: 'ok', color: '#f90' } },			// 45-60 bits
 				{ password: 'Asdf123_~!', expected: { strength: 'good', color: '#8c0' } },		// 60-75 bits
 				{ password: 'Asdf123!"£$%^', expected: { strength: 'great', color: '#0c5' } }	// > 75 bits
