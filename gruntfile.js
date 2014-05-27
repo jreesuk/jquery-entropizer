@@ -4,7 +4,7 @@ module.exports = function(grunt) {
 		pkg: grunt.file.readJSON('package.json'),
 		watch: {
 			scripts: {
-				files: ['src/**/*.js', 'test/**/*.js', '.jshintrc'],
+				files: ['src/**/*', 'test/**/*.js', '.jshintrc'],
 				tasks: ['default']
 			}
 		},
@@ -48,7 +48,7 @@ module.exports = function(grunt) {
 		},
 		clean: {
 			dist: {
-				src: ['dist']
+				src: ['dist/**/*']
 			}
 		},
 		copy: {

@@ -9,11 +9,11 @@ for (var file in window.__karma__.files) {
 
 requirejs.config({
 	// Karma serves files from '/base'
-	baseUrl: '/base/src',
+	baseUrl: '/base/src/js',
 
 	paths: {
-		jquery: '../lib/jquery',
-		entropizer: '../lib/entropizer',
+		jquery: '../../lib/jquery',
+		entropizer: '../../lib/entropizer',
 		'jquery-entropizer': 'jquery-entropizer'
 	},
 
