@@ -16,13 +16,20 @@
 				engine: null
 			};
 			this.options = $.extend({}, defaults, options);
-			this.entropizer = new Entropizer(this.options.engine);
+			this.entropizer = this.createEngine(this.options.engine);
 			this.ui = this.options.create.call(this, container);
 			this.target = $(this.options.target);
 			this.target.on(this.namespaceEvents(this.options.on), $.proxy(this.update, this));
 			this.update();
 		}
 
+		Meter.prototype.createEngine = function(engineOptions) {
+			if (engineOptions && engineOptions.constructor === Entropizer) {
+				return engineOptions;
+			}
+			return new Entropizer(engineOptions);
+		};
+		
 		Meter.prototype.namespaceEvents = function(events) {
 			var namespaced = [];
 			$.each(events.split(' '), function(index, event) {

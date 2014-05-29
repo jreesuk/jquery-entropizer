@@ -1,6 +1,6 @@
 ﻿/* global jasmine, describe, it, expect, beforeEach, afterEach */
 
-define(['jquery', 'jquery-entropizer'], function($) {
+define(['jquery', 'entropizer', 'jquery-entropizer'], function($, Entropizer) {
 	'use strict';
 
 	describe('jQuery entropizer', function() {
@@ -316,7 +316,7 @@ define(['jquery', 'jquery-entropizer'], function($) {
 
 		describe('engine', function() {
 
-			it('can configure entropizer engine', function() {
+			it('can configure entropizer engine using options', function() {
 				var render = jasmine.createSpy(),
 					data;
 
@@ -332,6 +332,24 @@ define(['jquery', 'jquery-entropizer'], function($) {
 
 				data = render.calls.mostRecent().args[0];
 				expect(data.entropy).toEqual(0);
+			});
+
+			it('can configure entropizer engine using an Entropizer instance', function() {
+				var render = jasmine.createSpy(),
+					data;
+
+				$('#meter').entropizer({
+					target: '#pwd',
+					render: render,
+					engine: new Entropizer({
+						classes: ['uppercase', 'numeric']
+					})
+				});
+
+				$('#pwd').val('Foo1').trigger('keyup');
+
+				data = render.calls.mostRecent().args[0];
+				expect(data.entropy).toBeCloseTo(20.680, 3);
 			});
 
 		});

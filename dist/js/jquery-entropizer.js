@@ -1,6 +1,6 @@
 /*!
  * jquery-entropizer - 0.0.1
- * Built: 2014-05-29 08:58
+ * Built: 2014-05-29 21:25
  * https://github.com/jreesuk/jquery-entropizer
  * 
  * Copyright (c) 2014 Jonathan Rees
@@ -24,13 +24,20 @@
 				engine: null
 			};
 			this.options = $.extend({}, defaults, options);
-			this.entropizer = new Entropizer(this.options.engine);
+			this.entropizer = this.createEngine(this.options.engine);
 			this.ui = this.options.create.call(this, container);
 			this.target = $(this.options.target);
 			this.target.on(this.namespaceEvents(this.options.on), $.proxy(this.update, this));
 			this.update();
 		}
 
+		Meter.prototype.createEngine = function(engineOptions) {
+			if (engineOptions && engineOptions.constructor === Entropizer) {
+				return engineOptions;
+			}
+			return new Entropizer(engineOptions);
+		};
+		
 		Meter.prototype.namespaceEvents = function(events) {
 			var namespaced = [];
 			$.each(events.split(' '), function(index, event) {
