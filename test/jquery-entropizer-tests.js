@@ -100,51 +100,51 @@ define(['jquery', 'entropizer', 'jquery-entropizer'], function($, Entropizer) {
 		});
 
 		it('uses first password field as default target', function() {
-			var render = jasmine.createSpy();
+			var update = jasmine.createSpy();
 
 			$('#meter').entropizer({
-				render: render
+				update: update
 			});
 
-			expect(render.calls.count()).toEqual(1);
+			expect(update.calls.count()).toEqual(1);
 
 			$('#username').val('zxcv').trigger('keyup');
-			expect(render.calls.count()).toEqual(1);
+			expect(update.calls.count()).toEqual(1);
 
 			$('#pwd').val('abcd').trigger('keyup');
-			expect(render.calls.count()).toEqual(2);
+			expect(update.calls.count()).toEqual(2);
 
 			$('#confirm').val('abcd').trigger('keyup');
-			expect(render.calls.count()).toEqual(2);
+			expect(update.calls.count()).toEqual(2);
 		});
 
 		describe('initial state', function() {
 
 			it('calculates initial entropy for empty input', function() {
-				var render = jasmine.createSpy(),
+				var update = jasmine.createSpy(),
 					data;
 
 				$('#meter').entropizer({
 					target: '#pwd',
-					render: render
+					update: update
 				});
 
-				data = render.calls.mostRecent().args[0];
+				data = update.calls.mostRecent().args[0];
 				expect(data.entropy).toEqual(0);
 			});
 
 			it('calculates initial entropy for non-empty input', function() {
-				var render = jasmine.createSpy(),
+				var update = jasmine.createSpy(),
 					data;
 
 				$('#pwd').val('abc');
 
 				$('#meter').entropizer({
 					target: '#pwd',
-					render: render
+					update: update
 				});
 
-				data = render.calls.mostRecent().args[0];
+				data = update.calls.mostRecent().args[0];
 				expect(data.entropy).toBeCloseTo(14.101, 3);
 			});
 
@@ -153,136 +153,216 @@ define(['jquery', 'entropizer', 'jquery-entropizer'], function($, Entropizer) {
 		describe('event subscription', function() {
 
 			it('subscribes to keyup by default', function() {
-				var render = jasmine.createSpy(),
+				var update = jasmine.createSpy(),
 					data;
 
 				$('#meter').entropizer({
 					target: '#pwd',
-					render: render
+					update: update
 				});
 
 				$('#pwd').val('asdf').trigger('keyup');
 
-				data = render.calls.mostRecent().args[0];
+				data = update.calls.mostRecent().args[0];
 				expect(data.entropy).toBeCloseTo(18.802, 3);
 			});
 
 			it('subscribes to keydown by default', function() {
-				var render = jasmine.createSpy(),
+				var update = jasmine.createSpy(),
 					data;
 
 				$('#meter').entropizer({
 					target: '#pwd',
-					render: render
+					update: update
 				});
 
 				$('#pwd').val('asdf').trigger('keydown');
 
-				data = render.calls.mostRecent().args[0];
+				data = update.calls.mostRecent().args[0];
 				expect(data.entropy).toBeCloseTo(18.802, 3);
 			});
 
 			it('can configure event to subscribe to', function() {
-				var render = jasmine.createSpy(),
+				var update = jasmine.createSpy(),
 					calls;
 
 				$('#meter').entropizer({
 					target: '#pwd',
-					render: render,
+					update: update,
 					on: 'test'
 				});
 
 				$('#pwd').val('asdf');
-				calls = render.calls.count();
+				calls = update.calls.count();
 				$('#pwd').trigger('test');
 
-				expect(render.calls.count()).toEqual(calls + 1);
+				expect(update.calls.count()).toEqual(calls + 1);
 			});
 
 		});
 
 		describe('mapping', function() {
 
-			var testCases = [
-				{ password: 'asdf', expected: { strength: 'poor', color: '#d00' } },				// < 45 bits
-				{ password: 'Asdf123!', expected: { strength: 'ok', color: '#f80' } },				// 45-60 bits
-				{ password: 'Asdf123_~!', expected: { strength: 'good', color: '#8c0' } },			// 60-75 bits
-				{ password: 'Asdf123!"£$%^', expected: { strength: 'excellent', color: '#0c5' } }	// > 75 bits
-			];
+			describe('default buckets', function() {
 
-			for (var i = 0; i < testCases.length; i++) {
-				runTest(testCases[i].password, testCases[i].expected);
-			}
+				var testCases = [
+					{ password: 'asdf', expected: { strength: 'poor', color: '#d00' } },				// < 45 bits
+					{ password: 'Asdf123!', expected: { strength: 'ok', color: '#f80' } },				// 45-60 bits
+					{ password: 'Asdf123_~!', expected: { strength: 'good', color: '#8c0' } },			// 60-75 bits
+					{ password: 'Asdf123!"£$%^', expected: { strength: 'excellent', color: '#0c8' } }	// > 75 bits
+				];
 
-			function runTest(password, expected) {
-				it('maps entropy using default buckets (' + expected.strength + ', ' + expected.color + ')', function() {
-					var render = jasmine.createSpy(),
-						data;
+				for (var i = 0; i < testCases.length; i++) {
+					runTest(testCases[i].password, testCases[i].expected);
+				}
 
-					$('#meter').entropizer({
-						target: '#pwd',
-						render: render
+				function runTest(password, expected) {
+					it('maps entropy using default buckets (' + expected.strength + ', ' + expected.color + ')', function() {
+						var update = jasmine.createSpy(),
+							data;
+
+						$('#meter').entropizer({
+							target: '#pwd',
+							update: update
+						});
+
+						$('#pwd').val(password).trigger('keyup');
+
+						data = update.calls.mostRecent().args[0];
+						expect(data.strength).toEqual(expected.strength);
+						expect(data.color).toEqual(expected.color);
 					});
+				}
+			});
+			
+			describe('custom buckets', function() {
 
-					$('#pwd').val(password).trigger('keyup');
+				var testCases = [
+					{ password: 'as', expected: { manPoints: 0, rating: 'rubbish', color: 'hotpink' } },			// 9 bits
+					{ password: 'Asd', expected: { manPoints: 2, rating: 'meh', color: 'yellow' } },				// 17 bits
+					{ password: 'Asdf!', expected: { manPoints: 10, rating: 'acceptable', color: 'turquoise' } },	// 29 bits
+					{ password: 'Asdf!+', expected: { manPoints: 9000, rating: 'awesome', color: 'aquamarine' } }	// 39 bits
+				];
 
-					data = render.calls.mostRecent().args[0];
-					expect(data.strength).toEqual(expected.strength);
-					expect(data.color).toEqual(expected.color);
-				});
-			}
+				for (var i = 0; i < testCases.length; i++) {
+					runTest(testCases[i].password, testCases[i].expected);
+				}
 
+				function runTest(password, expected) {
+					it('maps entropy using custom buckets (' + expected.strength + ', ' + expected.color + ')', function() {
+						var update = jasmine.createSpy(),
+							data;
+
+						$('#meter').entropizer({
+							target: '#pwd',
+							buckets: [
+								{ max: 10, manPoints: 0, rating: 'rubbish', color: 'hotpink' },
+								{ min: 10, max: 20, manPoints: 2, rating: 'meh', color: 'yellow' },
+								{ min: 20, max: 30, manPoints: 10, rating: 'acceptable', color: 'turquoise' },
+								{ min: 30, manPoints: 9000, rating: 'awesome', color: 'aquamarine' }
+							],
+							update: update
+						});
+
+						$('#pwd').val(password).trigger('keyup');
+
+						data = update.calls.mostRecent().args[0];
+						expect(data.manPoints).toEqual(expected.manPoints);
+						expect(data.rating).toEqual(expected.rating);
+						expect(data.color).toEqual(expected.color);
+					});
+				}
+			});
+			
 			it('maps to percent using default maximum of 100', function() {
-				var render = jasmine.createSpy(),
+				var update = jasmine.createSpy(),
 					data;
 
 				$('#meter').entropizer({
 					target: '#pwd',
-					render: render
+					update: update
 				});
 
 				$('#pwd').val('abcd').trigger('keyup');
 
-				data = render.calls.mostRecent().args[0];
+				data = update.calls.mostRecent().args[0];
 				expect(data.percent).toBeCloseTo(18.802, 3);
 			});
 
 			it('maps to percent using specified maximum', function() {
-				var render = jasmine.createSpy(),
+				var update = jasmine.createSpy(),
 					data;
 
 				$('#meter').entropizer({
 					target: '#pwd',
-					render: render,
+					update: update,
 					maximum: 80
 				});
 
 				$('#pwd').val('abcd').trigger('keyup');
 
-				data = render.calls.mostRecent().args[0];
+				data = update.calls.mostRecent().args[0];
 				expect(data.percent).toBeCloseTo(23.502, 3);
 			});
 
-			it('can configure custom map', function() {
-				var render = jasmine.createSpy(),
+			it('can configure custom map and custom map options', function() {
+				var update = jasmine.createSpy(),
 					data;
 
 				$('#meter').entropizer({
 					target: '#pwd',
-					render: render,
-					map: function(entropy) {
+					update: update,
+					foo: ' bits',
+					bar: 'baz',
+					map: function(entropy, options) {
 						return {
-							asdf: entropy.toFixed(0) + ' bits'
+							asdf: entropy.toFixed(0) + options.foo,
+							baz: options.bar
 						};
 					}
 				});
 
 				$('#pwd').val('asdf').trigger('keyup');
 
-				data = render.calls.mostRecent().args[0];
+				data = update.calls.mostRecent().args[0];
 				expect(data).toEqual({
-					asdf: '19 bits'
+					asdf: '19 bits',
+					baz: 'baz'
 				});
+			});
+
+		});
+
+		describe('classification', function() {
+
+			var testBuckets = [
+				{ max: 10, foo: { a: 1, b: 2 }, bar: 'A' },
+				{ min: 20, max: 30, foo: 'b', bar: 'B' },
+				{ min: 30, max: 50, baz: 'c' },
+				{ min: 50 }
+			];
+
+			it('classifies a value using buckets', function() {
+
+				function runTest(testCase) {
+					var value = $.entropizer.classify(testCase.input, testBuckets);
+					expect(value).toEqual(testCase.expected);
+				}
+				
+				var testCases = [
+					{ input: 5, expected: { foo: { a: 1, b: 2 }, bar: 'A' } },
+					{ input: 10, expected: null },
+					{ input: 15, expected: null },
+					{ input: 20, expected: { foo: 'b', bar: 'B' } },
+					{ input: 22, expected: { foo: 'b', bar: 'B' } },
+					{ input: 30, expected: { baz: 'c' } },
+					{ input: 50, expected: {} },
+					{ input: 80, expected: {} }
+				];
+				
+				for (var i = 0; i < testCases.length; i++) {
+					runTest(testCases[i]);
+				}
 			});
 
 		});
@@ -300,13 +380,13 @@ define(['jquery', 'entropizer', 'jquery-entropizer'], function($, Entropizer) {
 					};
 				}
 
-				function render(data, ui) {
+				function update(data, ui) {
 					ui.whizzer.html('whizz! ' + data.entropy + ' bits');
 				}
 
 				$('#meter').entropizer({
 					create: create,
-					render: render
+					update: update
 				});
 
 				expect($('#whizzer').html()).toEqual('whizz! 0 bits');
@@ -317,12 +397,12 @@ define(['jquery', 'entropizer', 'jquery-entropizer'], function($, Entropizer) {
 		describe('engine', function() {
 
 			it('can configure entropizer engine using options', function() {
-				var render = jasmine.createSpy(),
+				var update = jasmine.createSpy(),
 					data;
 
 				$('#meter').entropizer({
 					target: '#pwd',
-					render: render,
+					update: update,
 					engine: {
 						classes: ['lowercase', 'numeric']
 					}
@@ -330,17 +410,17 @@ define(['jquery', 'entropizer', 'jquery-entropizer'], function($, Entropizer) {
 
 				$('#pwd').val('ASDF').trigger('keyup');
 
-				data = render.calls.mostRecent().args[0];
+				data = update.calls.mostRecent().args[0];
 				expect(data.entropy).toEqual(0);
 			});
 
 			it('can configure entropizer engine using an Entropizer instance', function() {
-				var render = jasmine.createSpy(),
+				var update = jasmine.createSpy(),
 					data;
 
 				$('#meter').entropizer({
 					target: '#pwd',
-					render: render,
+					update: update,
 					engine: new Entropizer({
 						classes: ['uppercase', 'numeric']
 					})
@@ -348,7 +428,7 @@ define(['jquery', 'entropizer', 'jquery-entropizer'], function($, Entropizer) {
 
 				$('#pwd').val('Foo1').trigger('keyup');
 
-				data = render.calls.mostRecent().args[0];
+				data = update.calls.mostRecent().args[0];
 				expect(data.entropy).toBeCloseTo(20.680, 3);
 			});
 

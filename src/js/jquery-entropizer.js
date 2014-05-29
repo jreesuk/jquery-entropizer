@@ -4,24 +4,61 @@
 	// Actual plugin definition
 	function factory($, Entropizer) {
 
-		function Meter(container, options) {
-			var defaults = {
-				target: 'input[type=password]:first',
-				on: 'keydown keyup',
-				maximum: 100,
-				create: this._create,
-				destroy: this._destroy,
-				map: this._map,
-				render: this._render,
-				engine: null
-			};
+		var defaults = {
+			target: 'input[type=password]:first',
+			on: 'keydown keyup',
+			maximum: 100,
+			buckets: [
+				{ max: 45, strength: 'poor', color: '#d00' },
+				{ min: 45, max: 60, strength: 'ok', color: '#f80' },
+				{ min: 60, max: 75, strength: 'good', color: '#8c0' },
+				{ min: 75, strength: 'excellent', color: '#0c8' }
+			],
+			create: function(container) {
+				var track = $('<div>').addClass('entropizer-track').appendTo(container),
+					bar = $('<div>').addClass('entropizer-bar').appendTo(track),
+					text = $('<div>').addClass('entropizer-text').appendTo(track);
+				return {
+					track: track,
+					bar: bar,
+					text: text
+				};
+			},
+			destroy: function(ui) {
+				ui.track.remove();
+			},
+			map: function(entropy, mapOptions) {
+				var selectedBucket = $.entropizer.classify(entropy, mapOptions.buckets);
+				var percent = Math.min(1, entropy / mapOptions.maximum) * 100;
+				return $.extend({ entropy: entropy, percent: percent }, selectedBucket);
+			},
+			update: function(data, ui) {
+				ui.bar.css({
+					'background-color': data.color,
+					'width': data.percent + '%'
+				});
+				ui.text.html(data.strength + ' (' + data.entropy.toFixed(0) + ' bits)');
+			},
+			engine: null
+		};
+
+		function Meter(container, options) {			
 			this.options = $.extend({}, defaults, options);
+			this.mapOptions = this.createMapOptions(this.options);
 			this.entropizer = this.createEngine(this.options.engine);
-			this.ui = this.options.create.call(this, container);
+			this.ui = this.options.create(container);
 			this.target = $(this.options.target);
-			this.target.on(this.namespaceEvents(this.options.on), $.proxy(this.update, this));
-			this.update();
+			this.target.on(this.namespaceEvents(this.options.on), $.proxy(this._update, this));
+			this._update();
 		}
+
+		Meter.prototype.createMapOptions = function(options) {
+			var clone = $.extend({}, options);
+			$.each(['target', 'on', 'create', 'destroy', 'map', 'render', 'engine'], function(index, name) {
+				delete clone[name];
+			});
+			return clone;
+		};
 
 		Meter.prototype.createEngine = function(engineOptions) {
 			if (engineOptions && engineOptions.constructor === Entropizer) {
@@ -38,71 +75,43 @@
 			return namespaced.join(' ');
 		};
 
-		Meter.prototype.destroy = function() {
+		Meter.prototype._destroy = function() {
 			this.target.off('.entropizer');
-			this.options.destroy.call(this, this.ui);
+			this.options.destroy(this.ui);
 		};
 
-		Meter.prototype.update = function() {
+		Meter.prototype._update = function() {
 			var password = this.target.val(),
 				entropy = this.entropizer.evaluate(password),
-				data = this.options.map.call(this, entropy);
-			this.options.render.call(this, data, this.ui);
+				data = this.options.map(entropy, this.mapOptions);
+			this.options.update(data, this.ui);
 		};
 
-		// Default UI creation
-		Meter.prototype._create = function(container) {
-			var track = $('<div>').addClass('entropizer-track').appendTo(container),
-				bar = $('<div>').addClass('entropizer-bar').appendTo(track),
-				text = $('<div>').addClass('entropizer-text').appendTo(track);
-			return {
-				track: track,
-				bar: bar,
-				text: text
-			};
-		};
-
-		// Default UI destroy
-		Meter.prototype._destroy = function(ui) {
-			ui.track.remove();
-		};
-
-		// Default map
-		Meter.prototype._map = function(entropy) {
-			var buckets = [
-				{ max: 45, strength: 'poor', color: '#d00' },
-				{ min: 45, max: 60, strength: 'ok', color: '#f80' },
-				{ min: 60, max: 75, strength: 'good', color: '#8c0' },
-				{ min: 75, strength: 'excellent', color: '#0c5' }
-			],
-			selectedBucket;
-			$.each(buckets, function(index, bucket) {
-				if ((!bucket.min || entropy >= bucket.min) && (!bucket.max || entropy < bucket.max)) {
-					selectedBucket = bucket;
-					return false;
+		$.entropizer = {
+			classify: function(value, buckets) {
+				var selectedBucket,
+					clone;
+				$.each(buckets, function(index, bucket) {
+					if ((!bucket.min || value >= bucket.min) && (!bucket.max || value < bucket.max)) {
+						selectedBucket = bucket;
+						return false;
+					}
+				});
+				if (!selectedBucket) {
+					return null;
 				}
-			});
-			return {
-				entropy: entropy,
-				strength: selectedBucket.strength,
-				color: selectedBucket.color,
-				percent: Math.min(1, entropy / this.options.maximum) * 100
-			};
+				// Clone the bucket without min, max
+				clone = $.extend({}, selectedBucket);
+				delete clone.min;
+				delete clone.max;
+				return clone;
+			}
 		};
-
-		// Default rendering
-		Meter.prototype._render = function(data, ui) {
-			ui.bar.css({
-				'background-color': data.color,
-				'width': data.percent + '%'
-			});
-			ui.text.html(data.strength + ' (' + data.entropy.toFixed(0) + ' bits)');
-		};
-
+		
 		$.fn.entropizer = function(options) {
 			var key = 'entropizer';
 			if (options === 'destroy') {
-				this.data(key).destroy();
+				this.data(key)._destroy();
 				this.removeData(key);
 			}
 			else {
