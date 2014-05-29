@@ -1,5 +1,5 @@
 ﻿.entropizer-track {
-    background-color: #aaa;
+    background-color: #888;
     color: #fff;
     text-align: center;
     font-size: 0.8em;
@@ -7,11 +7,14 @@
     height: 25px;
     line-height: 25px;
     position: relative;
+    border-radius: 13px;
+    overflow: hidden;
 }
 .entropizer-bar {
     width: 0px;
     height: 25px;
     position: absolute;
+    left: 0;
     -moz-transition: background-color 0.75s ease, width 0.25s ease-out;
     -o-transition: background-color 0.75s ease, width 0.25s ease-out;
     -webkit-transition: background-color 0.75s ease, width 0.25s ease-out;
@@ -20,5 +23,6 @@
 .entropizer-text {
     width: 100%;
     position: absolute;
+    left: 0;
     z-index: 1;
 }

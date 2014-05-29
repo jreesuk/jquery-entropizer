@@ -1,6 +1,6 @@
 /*!
  * jquery-entropizer - 0.0.1
- * Built: 2014-05-30 00:07
+ * Built: 2014-05-30 00:36
  * https://github.com/jreesuk/jquery-entropizer
  * 
  * Copyright (c) 2014 Jonathan Rees
@@ -17,7 +17,7 @@
 			on: 'keydown keyup',
 			maximum: 100,
 			buckets: [
-				{ max: 45, strength: 'poor', color: '#d00' },
+				{ max: 45, strength: 'poor', color: '#e13' },
 				{ min: 45, max: 60, strength: 'ok', color: '#f80' },
 				{ min: 60, max: 75, strength: 'good', color: '#8c0' },
 				{ min: 75, strength: 'excellent', color: '#0c8' }
@@ -50,23 +50,23 @@
 			engine: null
 		};
 
+		function cloneWithout(object, names) {
+			var clone = $.extend({}, object);
+			$.each(names, function(index, name) {
+				delete clone[name];
+			});
+			return clone;
+		}
+
 		function Meter(container, options) {			
 			this.options = $.extend({}, defaults, options);
-			this.mapOptions = this.createMapOptions(this.options);
+			this.mapOptions = cloneWithout(this.options, ['target', 'on', 'create', 'destroy', 'map', 'render', 'engine']);
 			this.entropizer = this.createEngine(this.options.engine);
 			this.ui = this.options.create(container);
 			this.target = $(this.options.target);
 			this.target.on(this.namespaceEvents(this.options.on), $.proxy(this._update, this));
 			this._update();
 		}
-
-		Meter.prototype.createMapOptions = function(options) {
-			var clone = $.extend({}, options);
-			$.each(['target', 'on', 'create', 'destroy', 'map', 'render', 'engine'], function(index, name) {
-				delete clone[name];
-			});
-			return clone;
-		};
 
 		Meter.prototype.createEngine = function(engineOptions) {
 			if (engineOptions && engineOptions.constructor === Entropizer) {
@@ -97,8 +97,7 @@
 
 		$.entropizer = {
 			classify: function(value, buckets) {
-				var selectedBucket,
-					clone;
+				var selectedBucket;
 				$.each(buckets, function(index, bucket) {
 					if ((!bucket.min || value >= bucket.min) && (!bucket.max || value < bucket.max)) {
 						selectedBucket = bucket;
@@ -108,11 +107,7 @@
 				if (!selectedBucket) {
 					return null;
 				}
-				// Clone the bucket without min, max
-				clone = $.extend({}, selectedBucket);
-				delete clone.min;
-				delete clone.max;
-				return clone;
+				return cloneWithout(selectedBucket, ['min', 'max']);
 			}
 		};
 		

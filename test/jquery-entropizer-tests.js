@@ -206,7 +206,7 @@ define(['jquery', 'entropizer', 'jquery-entropizer'], function($, Entropizer) {
 			describe('default buckets', function() {
 
 				var testCases = [
-					{ password: 'asdf', expected: { strength: 'poor', color: '#d00' } },				// < 45 bits
+					{ password: 'asdf', expected: { strength: 'poor', color: '#e13' } },				// < 45 bits
 					{ password: 'Asdf123!', expected: { strength: 'ok', color: '#f80' } },				// 45-60 bits
 					{ password: 'Asdf123_~!', expected: { strength: 'good', color: '#8c0' } },			// 60-75 bits
 					{ password: 'Asdf123!"£$%^', expected: { strength: 'excellent', color: '#0c8' } }	// > 75 bits
