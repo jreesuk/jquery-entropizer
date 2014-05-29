@@ -1,6 +1,6 @@
 /*!
  * jquery-entropizer - 0.0.1
- * Built: 2014-05-27 23:08
+ * Built: 2014-05-29 08:58
  * https://github.com/jreesuk/jquery-entropizer
  * 
  * Copyright (c) 2014 Jonathan Rees
@@ -40,7 +40,7 @@
 		};
 
 		Meter.prototype.destroy = function() {
-			this.target.off(this.namespaceEvents(this.options.on));
+			this.target.off('.entropizer');
 			this.options.destroy.call(this, this.ui);
 		};
 

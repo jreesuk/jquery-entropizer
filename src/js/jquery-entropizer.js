@@ -32,7 +32,7 @@
 		};
 
 		Meter.prototype.destroy = function() {
-			this.target.off(this.namespaceEvents(this.options.on));
+			this.target.off('.entropizer');
 			this.options.destroy.call(this, this.ui);
 		};
 
