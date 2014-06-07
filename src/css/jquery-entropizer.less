@@ -1,20 +1,21 @@
 ﻿@transition: background-color 0.75s ease, width 0.25s ease-out;
+@height: 30px;
 
 .entropizer-track {
     background-color: #888;
     color: #fff;
     text-align: center;
-    font-size: 0.8em;
+    font-size: 1em;
     width: 100%;
-    height: 25px;
-    line-height: 25px;
+    height: @height;
+    line-height: @height;
     position: relative;
-    border-radius: 13px;
+    border-radius: @height / 2;
     overflow: hidden;
 }
 .entropizer-bar {
     width: 0px;
-    height: 25px;
+    height: @height;
     position: absolute;
     left: 0;
     -moz-transition: @transition;

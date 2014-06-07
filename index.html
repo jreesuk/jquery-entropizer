@@ -1,52 +1,125 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>jQuery Entropizer demo</title>
+    <title>jQuery Entropizer demos</title>
+    <link rel="stylesheet" href="lib/bootstrap.min.css" />
     <script type="text/javascript" src="lib/jquery.js"></script>
     <script type="text/javascript" src="lib/entropizer.js"></script>
+    <script type="text/javascript" src="lib/bootstrap.min.js"></script>
     <script type="text/javascript" src="dist/js/jquery-entropizer.min.js"></script>
     <link type="text/css" rel="stylesheet" href="dist/css/jquery-entropizer.min.css" />
-    <script type="text/javascript">
-        $(function() {
-            $('#meter').entropizer();
-        });
-    </script>
     <style type="text/css">
-        body {
-            font-family: Arial, Verdana, sans-serif;
+        #meter1 {
+            padding-top: 2px;
         }
-        .wrapper {
-            width: 600px;
-            margin: 20px auto;
-            border: 1px solid #ccc;
-            padding: 20px;
+        #meter2 .entropizer-track {
+            background-color: #ddd;
+            border-radius: 2px;
+            height: 4px;
         }
-        label {
-            width: 400px;
-            float: left;
-        }
-        #pwd {
-            width: 300px;
-            margin-left: 10px;
-        }
-        #meter {
-            width: 180px;
-            float: right;
-            padding: 0 8px;
-        }
-        .clear {
-            clear: both;
+        #meter2 .entropizer-bar {
+            height: 4px;
         }
     </style>
 </head>
-<body>
-    <div class="wrapper">
-        <label>
-            Password
-            <input type="password" id="pwd" />
-        </label>
-        <div id="meter"></div>
-        <div class="clear"></div>
+<body data-spy="scroll" data-target="#sidebar">
+    <div id="top" class="container">
+        <div class="page-header">
+            <h1>Entropizer Demos</h1>
+        </div>
+        <div class="col-md-9">
+            <div id="default" class="panel panel-primary">
+                <div class="panel-heading">
+                    Default UI
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="password1" class="col-md-2 control-label">Password:</label>
+                            <div class="col-md-6">
+                                <input type="password" id="password1" class="form-control" placeholder="Enter a password" />
+                            </div>
+                            <div class="col-md-4" id="meter1">
+                            </div>
+                        </div>
+                    </form>
+                    <hr />
+                    <h4>JS</h4>
+                    <pre>
+$('#meter1').entropizer({ target: '#password1' });
+</pre>
+                    <script type="text/javascript">
+                        $('#meter1').entropizer({ target: '#password1' });
+                    </script>
+                </div>
+            </div>
+
+            <div id="thin" class="panel panel-primary">
+                <div class="panel-heading">
+                    Thin bar, no text
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="password2" class="col-md-2 control-label">Password:</label>
+                            <div class="col-md-10">
+                                <input type="password" id="password2" class="form-control" placeholder="Enter a password" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="meter2" class="col-md-10 pull-right"></div>
+                        </div>
+                    </form>
+                    <hr />
+                    <h4>JS</h4>
+                    <pre>
+$('#meter2').entropizer({
+    target: '#password2',
+    update: function(data, ui) {
+        ui.bar.css({
+            'background-color': data.color,
+            'width': data.percent + '%'
+        });
+    }
+});
+</pre>
+                    <hr />
+                    <h4>CSS</h4>
+                    <pre>
+#meter2 .entropizer-track {
+    background-color: #ddd;
+    border-radius: 2px;
+    height: 4px;
+}
+#meter2 .entropizer-bar {
+    height: 4px;
+}
+</pre>
+                    <script type="text/javascript">
+                        $('#meter2').entropizer({
+                            target: '#password2',
+                            update: function(data, ui) {
+                                ui.bar.css({
+                                    'background-color': data.color,
+                                    'width': data.percent + '%'
+                                });
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="sidebar" class="col-md-3">
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="#default">Default</a></li>
+                <li><a href="#thin">Thin, no text</a></li>
+            </ul>
+        </div>
+
+
     </div>
+
 </body>
 </html>
