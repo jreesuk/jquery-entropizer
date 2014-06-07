@@ -1,4 +1,6 @@
-﻿.entropizer-track {
+﻿@transition: background-color 0.75s ease, width 0.25s ease-out;
+
+.entropizer-track {
     background-color: #888;
     color: #fff;
     text-align: center;
@@ -15,10 +17,10 @@
     height: 25px;
     position: absolute;
     left: 0;
-    -moz-transition: background-color 0.75s ease, width 0.25s ease-out;
-    -o-transition: background-color 0.75s ease, width 0.25s ease-out;
-    -webkit-transition: background-color 0.75s ease, width 0.25s ease-out;
-    transition: background-color 0.75s ease, width 0.25s ease-out;
+    -moz-transition: @transition;
+    -o-transition: @transition;
+    -webkit-transition: @transition;
+    transition: @transition;
 }
 .entropizer-text {
     width: 100%;

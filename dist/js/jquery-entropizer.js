@@ -1,6 +1,6 @@
 /*!
  * jquery-entropizer - 0.0.1
- * Built: 2014-05-30 00:36
+ * Built: 2014-06-07 13:33
  * https://github.com/jreesuk/jquery-entropizer
  * 
  * Copyright (c) 2014 Jonathan Rees
@@ -58,43 +58,42 @@
 			return clone;
 		}
 
-		function Meter(container, options) {			
+		function Meter(container, options) {
 			this.options = $.extend({}, defaults, options);
-			this.mapOptions = cloneWithout(this.options, ['target', 'on', 'create', 'destroy', 'map', 'render', 'engine']);
+			this.mapOptions = cloneWithout(this.options, ['target', 'on', 'create', 'destroy', 'map', 'update', 'engine']);
 			this.entropizer = this.createEngine(this.options.engine);
 			this.ui = this.options.create(container);
 			this.target = $(this.options.target);
-			this.target.on(this.namespaceEvents(this.options.on), $.proxy(this._update, this));
+			this.target.on(this.namespace(this.options.on), $.proxy(this._update, this));
 			this._update();
 		}
 
-		Meter.prototype.createEngine = function(engineOptions) {
-			if (engineOptions && engineOptions.constructor === Entropizer) {
-				return engineOptions;
+		Meter.prototype = {
+			createEngine: function(engineOptions) {
+				if (engineOptions && engineOptions.constructor === Entropizer) {
+					return engineOptions;
+				}
+				return new Entropizer(engineOptions);
+			},
+			namespace: function(events) {
+				var namespaced = [];
+				$.each(events.split(' '), function(index, event) {
+					namespaced.push(event + '.entropizer');
+				});
+				return namespaced.join(' ');
+			},
+			_destroy: function() {
+				this.target.off('.entropizer');
+				this.options.destroy(this.ui);
+			},
+			_update: function() {
+				var password = this.target.val(),
+					entropy = this.entropizer.evaluate(password),
+					data = this.options.map(entropy, this.mapOptions);
+				this.options.update(data, this.ui);
 			}
-			return new Entropizer(engineOptions);
 		};
 		
-		Meter.prototype.namespaceEvents = function(events) {
-			var namespaced = [];
-			$.each(events.split(' '), function(index, event) {
-				namespaced.push(event + '.entropizer');
-			});
-			return namespaced.join(' ');
-		};
-
-		Meter.prototype._destroy = function() {
-			this.target.off('.entropizer');
-			this.options.destroy(this.ui);
-		};
-
-		Meter.prototype._update = function() {
-			var password = this.target.val(),
-				entropy = this.entropizer.evaluate(password),
-				data = this.options.map(entropy, this.mapOptions);
-			this.options.update(data, this.ui);
-		};
-
 		$.entropizer = {
 			classify: function(value, buckets) {
 				var selectedBucket;
