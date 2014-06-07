@@ -25,7 +25,8 @@ Basic usage:
 ```
 
 ```js
-// Creates a default Entropizer meter inside `#meter` and watches the first password field on the page by default
+// Creates a default Entropizer meter inside #meter and watches the first password field on the
+// page by default
 $('#meter').entropizer();
 ```
 
@@ -48,9 +49,10 @@ $('#meter').entropizer({
 	maximum: 80,
 
 	// An array of ranges to use when classifying password strength. Used internally by default map
-	// function and can be used publicly via $.entropizer.classify(value, buckets). Properties 'min' and 'max'
-	// are used to calculate which bucket to use - upon finding a match, an object containing all the other
-	// properties is returned, e.g. below, a value of 42 returns { message: ':)' }
+	// function and can be used publicly via $.entropizer.classify(value, buckets). Properties
+	// 'min' and 'max' are used to calculate which bucket to use - upon finding a match, an object
+	// containing all the other properties is returned, e.g. below, a value of 42 returns
+	// { message: ':)' }
 	// Default: 4 ranges with strength and color properties (see source for values)
 	buckets: [
 		{ max: 40, message: ':(' },
@@ -80,22 +82,23 @@ $('#meter').entropizer({
 
 	// A callback that maps the raw entropy value to an object passed to update. First argument is
 	// the number of bits of entropy, second argument is an object containing all properties on
-	// the options object apart from target, on, engine and the callbacks (i.e. by default, just maximum
-	// and buckets)
-	// Default: uses maximum and buckets above to return an object with entropy, percent, strength and color
+	// the options object apart from target, on, engine and the callbacks (i.e. by default, just
+	// maximum and buckets)
+	// Default: uses maximum and buckets above to return an object with entropy, percent, strength
+	// and color properties
 	map: function(entropy, mapOptions) {
 		return $.extend({ entropy: entropy }, $.entropizer.classify(entropy, mapOptions.buckets));
 	},
 
 	// A callback controlling UI updates - takes the data returned by map and the ui object
-	// Default: updates the width and background color of the bar, and displays the entropy as a string
+	// Default: updates the width and background color of the bar, and displays the number of bits
 	update: function(data, ui) {
 		ui.foo.text(data.entropy.toFixed(0) + ' ' + data.message);
 	}
 });
 ```
 
-If you need to remove an Entropizer instance:
+If you need to remove an `entropizer` instance:
 
 ```js
 $('#meter').entropizer('destroy');
@@ -103,6 +106,12 @@ $('#meter').entropizer('destroy');
 
 This will unbind all Entropizer events from the target and invoke the `destroy` callback.
 
+## Styling
+
+The default UI creates elements for the track, bar and text - these use the CSS classes
+`entropizer-track`, `entropizer-bar` and `entropizer-text` respectively. Default styles for these
+elements can be found in the provided CSS stylesheet.
+
 ## Engine options
 
-For a guide to Entropizer engine options, see the readme [here](https://github.com/jreesuk/entropizer)
+For a guide to Entropizer engine options, see the readme [here](https://github.com/jreesuk/entropizer).
