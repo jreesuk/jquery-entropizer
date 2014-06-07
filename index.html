@@ -2,10 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>jQuery Entropizer demos</title>
-    <link rel="stylesheet" href="lib/bootstrap.min.css" />
+    <link rel="stylesheet" href="lib/demo/bootstrap.min.css" />
     <script type="text/javascript" src="lib/jquery.js"></script>
     <script type="text/javascript" src="lib/entropizer.js"></script>
-    <script type="text/javascript" src="lib/bootstrap.min.js"></script>
+    <script type="text/javascript" src="lib/demo/bootstrap.min.js"></script>
     <script type="text/javascript" src="dist/js/jquery-entropizer.min.js"></script>
     <link type="text/css" rel="stylesheet" href="dist/css/jquery-entropizer.min.css" />
     <style type="text/css">
@@ -13,12 +13,19 @@
             padding-top: 2px;
         }
         #meter2 .entropizer-track {
-            background-color: #ddd;
+            background-color: #e8e8e8;
             border-radius: 2px;
             height: 4px;
         }
         #meter2 .entropizer-bar {
             height: 4px;
+        }
+        #meter3 {
+            margin-top: 5px;
+        }
+        .affix {
+            top: 20px;
+            width: 255px;
         }
     </style>
 </head>
@@ -28,6 +35,10 @@
             <h1>Entropizer Demos</h1>
         </div>
         <div class="col-md-9">
+            <div class="alert alert-info">
+                Project page: <a href="https://github.com/jreesuk/jquery-entropizer">https://github.com/jreesuk/jquery-entropizer</a>
+            </div>
+            <hr />
             <div id="default" class="panel panel-primary">
                 <div class="panel-heading">
                     Default UI
@@ -36,10 +47,10 @@
                     <form class="form-horizontal">
                         <div class="form-group">
                             <label for="password1" class="col-md-2 control-label">Password:</label>
-                            <div class="col-md-6">
+                            <div class="col-md-5">
                                 <input type="password" id="password1" class="form-control" placeholder="Enter a password" />
                             </div>
-                            <div class="col-md-4" id="meter1">
+                            <div class="col-md-5" id="meter1">
                             </div>
                         </div>
                     </form>
@@ -87,7 +98,7 @@ $('#meter2').entropizer({
                     <h4>CSS</h4>
                     <pre>
 #meter2 .entropizer-track {
-    background-color: #ddd;
+    background-color: #e8e8e8;
     border-radius: 2px;
     height: 4px;
 }
@@ -109,17 +120,117 @@ $('#meter2').entropizer({
                 </div>
             </div>
 
+            <div id="bootstrap" class="panel panel-primary">
+                <div class="panel-heading">
+                    Bootstrap progress bar
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="password3" class="col-md-2 control-label">Password:</label>
+                            <div class="col-md-5">
+                                <input type="password" id="password3" class="form-control" placeholder="Enter a password" />
+                            </div>
+                            <div id="meter3" class="col-md-5"></div>
+                        </div>
+                    </form>
+                    <hr />
+                    <h4>JS</h4>
+                    <pre>
+var max = 80;
+$('#meter3').entropizer({
+    target: '#password3',
+    maximum: max,
+    buckets: [
+        { max: 20, suffix: 'danger' },
+        { min: 20, max: 40, suffix: 'warning' },
+        { min: 40, max: 60, suffix: 'success' },
+        { min: 60, suffix: 'info' }
+    ],
+    create: function(container) {
+        var wrapper = $('&lt;div&gt;').addClass('progress progress-striped').appendTo(container);
+        var bar = $('&lt;div&gt;').addClass('progress-bar')
+            .attr({
+                'role': 'progressbar',
+                'aria-valuemin': 0,
+                'aria-valuemax': max
+            })
+            .appendTo(wrapper);
+        return {
+            wrapper: wrapper,
+            bar: bar
+        };
+    },
+    update: function(data, ui) {
+        ui.bar.css({
+                'width': data.percent + '%'
+            })
+            .attr({
+                'aria-valuenow': data.entropy
+            })
+            .text(data.entropy.toFixed(0) + ' bits');
+        ui.bar[0].className = 'progress-bar progress-bar-' + data.suffix;
+    },
+    destroy: function(ui) {
+        ui.wrapper.remove();
+    }
+});
+</pre>
+                    <script type="text/javascript">
+                        var max = 80;
+                        $('#meter3').entropizer({
+                            target: '#password3',
+                            maximum: max,
+                            buckets: [
+                                { max: 20, suffix: 'danger' },
+                                { min: 20, max: 40, suffix: 'warning' },
+                                { min: 40, max: 60, suffix: 'success' },
+                                { min: 60, suffix: 'info' }
+                            ],
+                            create: function(container) {
+                                var wrapper = $('<div>').addClass('progress progress-striped active').appendTo(container);
+                                var bar = $('<div>').addClass('progress-bar')
+                                    .attr({
+                                        'role': 'progressbar',
+                                        'aria-valuemin': 0,
+                                        'aria-valuemax': max
+                                    })
+                                    .appendTo(wrapper);
+                                return {
+                                    wrapper: wrapper,
+                                    bar: bar
+                                };
+                            },
+                            update: function(data, ui) {
+                                ui.bar.css({
+                                        'width': data.percent + '%'
+                                    })
+                                    .attr({
+                                        'aria-valuenow': data.entropy
+                                    })
+                                    .text(data.entropy.toFixed(0));
+                                ui.bar[0].className = 'progress-bar progress-bar-' + data.suffix;
+                            },
+                            destroy: function(ui) {
+                                ui.wrapper.remove();
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
         </div>
 
-        <div id="sidebar" class="col-md-3">
-            <ul class="nav nav-pills nav-stacked">
-                <li><a href="#default">Default</a></li>
-                <li><a href="#thin">Thin, no text</a></li>
-            </ul>
+        <div class="col-md-3">
+            <div id="sidebar" data-spy="affix" data-offset-top="100">
+                <ul class="nav nav-pills nav-stacked">
+                    <li class="active"><a href="#default">Default</a></li>
+                    <li><a href="#thin">Thin, no text</a></li>
+                    <li><a href="#bootstrap">Bootstrap</a></li>
+                </ul>
+                <hr />
+                <a href="#top">Back to top</a>
+            </div>
         </div>
-
-
     </div>
-
 </body>
 </html>

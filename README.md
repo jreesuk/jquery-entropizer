@@ -12,6 +12,10 @@ calculate password entropy. It's easy to set up and provides several hooks to cu
 jQuery Entropizer supports [AMD](http://requirejs.org/) and [CommonJS](http://wiki.commonjs.org/wiki/CommonJS). It is available
 as an [npm package](https://www.npmjs.org/package/jquery-entropizer) and a [bower](http://bower.io/) component.
 
+## Demos
+
+Some basic demos can be found [here](http://jreesuk.github.io/jquery-entropizer/).
+
 ## Getting Started
 
 This plugin requires both [jQuery](http://jquery.com/) and [Entropizer](https://github.com/jreesuk/entropizer).
