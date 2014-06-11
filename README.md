@@ -18,7 +18,7 @@ Some basic demos can be found [here](http://jreesuk.github.io/jquery-entropizer/
 
 ## Getting Started
 
-This plugin requires both [jQuery](http://jquery.com/) and [Entropizer](https://github.com/jreesuk/entropizer).
+This plugin requires both [jQuery](http://jquery.com/) (1.7.2+) and [Entropizer](https://github.com/jreesuk/entropizer).
 
 Basic usage:
 
@@ -119,3 +119,7 @@ elements can be found in the provided CSS stylesheet.
 ## Engine options
 
 For a guide to Entropizer engine options, see the readme [here](https://github.com/jreesuk/entropizer).
+
+## Browser compatibility
+
+jQuery Entropizer supports IE6+, Firefox, Chrome and Opera.
