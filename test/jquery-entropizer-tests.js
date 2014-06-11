@@ -249,7 +249,7 @@ define(['jquery', 'entropizer', 'jquery-entropizer'], function($, Entropizer) {
 				}
 
 				function runTest(password, expected) {
-					it('maps entropy using custom buckets (' + expected.strength + ', ' + expected.color + ')', function() {
+					it('maps entropy using custom buckets (' + expected.rating + ', ' + expected.color + ')', function() {
 						var update = jasmine.createSpy(),
 							data;
 

@@ -10,7 +10,7 @@ jQuery Entropizer is a simple, lightweight jQuery plugin that uses the [Entropiz
 calculate password entropy. It's easy to set up and provides several hooks to customize the UI.
 
 jQuery Entropizer supports [AMD](http://requirejs.org/) and [CommonJS](http://wiki.commonjs.org/wiki/CommonJS). It is available
-as an [npm package](https://www.npmjs.org/package/jquery-entropizer) and a [bower](http://bower.io/) component.
+as a [bower](http://bower.io/) component.
 
 ## Demos
 
@@ -18,7 +18,7 @@ Some basic demos can be found [here](http://jreesuk.github.io/jquery-entropizer/
 
 ## Getting Started
 
-This plugin requires both [jQuery](http://jquery.com/) and [Entropizer](https://github.com/jreesuk/entropizer).
+This plugin requires both [jQuery](http://jquery.com/) (1.7.2+) and [Entropizer](https://github.com/jreesuk/entropizer).
 
 Basic usage:
 
@@ -119,3 +119,7 @@ elements can be found in the provided CSS stylesheet.
 ## Engine options
 
 For a guide to Entropizer engine options, see the readme [here](https://github.com/jreesuk/entropizer).
+
+## Browser compatibility
+
+jQuery Entropizer supports IE6+, Firefox, Chrome and Opera.

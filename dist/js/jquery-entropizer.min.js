@@ -1,6 +1,6 @@
 /*!
- * jquery-entropizer - 0.0.1
- * Built: 2014-06-07 21:34
+ * jquery-entropizer - 0.1.0
+ * Built: 2014-06-11 23:46
  * https://github.com/jreesuk/jquery-entropizer
  * 
  * Copyright (c) 2014 Jonathan Rees

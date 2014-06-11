@@ -160,7 +160,7 @@ $('#meter3').entropizer({
             .attr({
                 'aria-valuenow': data.entropy
             })
-            .text(data.entropy.toFixed(0) + ' bits');
+            .text(data.entropy.toFixed(0));
         ui.bar[0].className = 'progress-bar progress-bar-' + data.suffix;
     },
     destroy: function(ui) {
