@@ -10,7 +10,7 @@ jQuery Entropizer is a simple, lightweight jQuery plugin that uses the [Entropiz
 calculate password entropy. It's easy to set up and provides several hooks to customize the UI.
 
 jQuery Entropizer supports [AMD](http://requirejs.org/) and [CommonJS](http://wiki.commonjs.org/wiki/CommonJS). It is available
-as an [npm package](https://www.npmjs.org/package/jquery-entropizer) and a [bower](http://bower.io/) component.
+as a [bower](http://bower.io/) component.
 
 ## Demos
 
